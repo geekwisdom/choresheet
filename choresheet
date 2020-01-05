@@ -1,0 +1,34 @@
+#!/bin/bash
+if [ -e ~/bin/commonvars.sh ] ; then 
+. ~/bin/commonvars.sh 
+fi 
+
+if [ "$CHORELOCATION"  == "" ] ; then
+export CHORELOCATION=./samples
+fi
+
+
+if [ "$NUM_CHORE_SHEETS"  == "" ] ; then
+export NUM_CHORE_SHEETS=`ls $CHORELOCATION/ChoreSheet?.pdf | wc -l` 
+fi
+
+if [ "$NUM_CHORE_SHEETS"  == "" ] ; then
+export NUM_CHORE_SHEETS=0
+fi
+
+if [ "$CHORENUM_FILE"  == "" ] ; then
+export CHORENUM_FILE=$TMPDIR/last.chorenum 
+fi
+
+sheet=`cat $CHORENUM_FILE` 
+if [ "$1" != "reprint" ] ; then
+sheet=$(($sheet + 1)) 
+fi
+if [ $sheet -gt $NUM_CHORE_SHEETS ] ;then
+ sheet=1
+fi
+echo $sheet > $CHORENUM_FILE
+echo sheet is $sheet
+filename=$CHORELOCATION/ChoreSheet$sheet.pdf
+lpr $filename
+
